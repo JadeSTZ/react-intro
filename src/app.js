@@ -1,60 +1,46 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { SearchForm } from './search-form'
+import axios from 'axios'
 
-const SearchForm = () => {
-    return (
-        <form>
-            <input type="text" />
-            <button type="submit">search</button>
-        </form>
-    )
-}
-
-const Header = (props) => (
-    <header>
-        <h1>{props.title}</h1>
-        <SearchForm />
-    </header>
-)
-
-const Content = (props) => (
-    <section>
-        <p>{props.AppContent}</p>
-        <Items AppItem={props.AppItem} />
-    </section>
-)
-
-const Items = (props) =>{
-    console.log(props.AppItems)
-    return (
+const MovieList = (props) => (
     <ul>
-        {props.Items.map(AppItem => (
-            <li>{AppItem}</li>
-        ))}
-        </ul>
+    {props.movies.map((movie, i) => {
+        return (
+            <li key={i}>
+            <h4>{movie.Title}</h4>
+            <img src ={movie.Poster}/>
+            </li>
+        )
+    })}
+    </ul>
 )
-}
 
-const App = () => {
-
-    const AppTitle = 'Fronttechs: React'
-    const AppContent = 'description'
-    const AppItem =[
-        "01",
-        "02",
-        "03",
-        "04",
-        "05"
-    ]
+class App extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            movies: []
+        }
+    }
+    onSearch(query) {
+        axios.get(`http://www.omdbapi.com/?s=${query}&plot=short&r=json`)
+            .then(response => {
+                const movies = response.data.Search
+                this.setState({
+                    movies: movies
+                })
+            })
+    }
+    render() {
         return (
             <section>
-                 <Header AppTitle ={AppTitle} />
-                 <Content 
-                     AppContent={AppContent}
-                     AppItem={AppItem} />
-             </section>
+                <h1>Movie Collection</h1>
+                <SearchForm onSearchSubmit={this.onSearch.bind(this)}/>
+                <MovieList movies={this.state.movies} />
+            </section>
         )
+    }
 }
 
-const element = document.getElementById('app');
-ReactDOM.render(<App />,element);
+ReactDOM.render(<App />, document.getElementById('app'))
