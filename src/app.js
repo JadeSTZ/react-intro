@@ -2,6 +2,32 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { SearchForm } from './search-form'
 import axios from 'axios'
+import {
+    Router,
+    Route,
+    hashHistory,
+    Link,
+    IndexRoute
+} from 'react-router'
+
+const Home = () => (
+    <section>
+        
+        <h1>This is home</h1>
+    </section>
+)
+
+
+const Nav = () => (
+    <nav>
+        <ul>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/search">Search</Link></li>
+            <li><Link to="/detail">MovieDetail</Link></li>
+
+        </ul>
+    </nav>
+)
 
 const MovieList = (props) => (
     <ul>
@@ -16,7 +42,7 @@ const MovieList = (props) => (
     </ul>
 )
 
-class App extends React.Component {
+class Search extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -41,6 +67,38 @@ class App extends React.Component {
             </section>
         )
     }
+
+    
 }
 
-ReactDOM.render(<App />, document.getElementById('app'))
+const MovieDetail = () =>(
+    <section>
+        <h1>MovieDetail</h1>
+    </section>
+)
+
+
+const App = props => (
+    <section>
+        <Nav />
+        {props.children}
+    </section>
+)
+
+class Main extends React.Component {
+    render() {
+        return (
+            <Router history={hashHistory}>
+                <Route path="/" component={App}>
+                <IndexRoute component={Home}/>
+                <Route path="search" component={Search}/>
+                <Route path="detail" component={MovieDetail}/>
+                </Route>
+            </Router>
+        )
+    }
+}
+
+
+
+ReactDOM.render(<Main />, document.getElementById('app'))
