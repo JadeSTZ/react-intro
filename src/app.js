@@ -10,10 +10,35 @@ import {
     IndexRoute
 } from 'react-router'
 
+const avengersQuery = {
+    pathname: '/search',
+    query:{
+        s: 'Avengers'
+    }
+}
+
+const doctorstrangeQuery = {
+    pathname: '/search',
+    query:{
+        s: 'Doctor Strange'
+    }
+}
+
+const batmanQuery = {
+    pathname: '/search',
+    query:{
+        s: 'Batman'
+    }
+}
 const Home = () => (
     <section>
-        
         <h1>This is home</h1>
+        <ul>
+            <li><Link to ={batmanQuery}>Batman</Link></li>
+            <li><Link to ={avengersQuery}>Avengers</Link></li>
+            <li><Link to ={doctorstrangeQuery}>Doctor Strange</Link></li>
+
+        </ul>
     </section>
 )
 
@@ -32,10 +57,15 @@ const Nav = () => (
 const MovieList = (props) => (
     <ul>
     {props.movies.map((movie, i) => {
+        const query = {
+            pathname: '/detail',
+            query: {
+                id: movie.imdbID
+            }
+        }
         return (
             <li key={i}>
-            <h4>{movie.Title}</h4>
-            <img src ={movie.Poster}/>
+                <h4><Link to={query}>{movie.Title}</Link></h4>
             </li>
         )
     })}
@@ -48,6 +78,10 @@ class Search extends React.Component {
         this.state = {
             movies: []
         }
+        if(props.location.query.s){
+          this.onSearch(props.location.query.s)
+        }
+        
     }
     onSearch(query) {
         axios.get(`http://www.omdbapi.com/?s=${query}&plot=short&r=json`)
@@ -71,12 +105,43 @@ class Search extends React.Component {
     
 }
 
-const MovieDetail = () =>(
-    <section>
-        <h1>MovieDetail</h1>
-    </section>
-)
+class MovieDetail extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            movie: {
+                Title: "Unknown"
+            }
+        }
+        if (props.location.query.id) {
+            const id = props.location.query.id
+            axios.get(`http://www.omdbapi.com/?i=${id}&plot=short&r=json`)
+                .then(response => {
+                    const movie = response.data
+                    this.setState({
+                        movie: movie
+                    })            
+                })
+        }
+    }
 
+    render() {
+        const {
+            Title,
+            Genre,
+            Poster
+        } = this.state.movie
+        return (
+            <section>
+                <h1>{Title}</h1>
+                <small>{Genre}</small>
+                <div>
+                    <img src = {Poster}/>
+                </div>
+            </section>        
+        )
+    }
+}
 
 const App = props => (
     <section>
