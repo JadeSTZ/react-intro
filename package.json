@@ -4,8 +4,11 @@
   "description": "Introduction to react",
   "main": "index.js",
   "scripts": {
+    "clean": "redir /s /q dist",
+    "copy": "copy src\\index.html dist",
     "start": "./node_modules/.bin/webpack-dev-server --content-base dist",
-    "build": ".\\node_modules\\.bin\\webpack --display-error-details"
+    "prebuile":"npm run clean & npm run copy",
+    "build": "webpack --display-error-details"
   },
   "author": "Jade Muangkotr",
   "license": "MIT",
