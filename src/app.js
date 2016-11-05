@@ -1,3 +1,4 @@
+import './app.scss'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { SearchForm } from './search-form'
@@ -92,7 +93,8 @@ class Search extends React.Component {
                 })
             })
     }
-    render() {
+    
+    render() {   
         return (
             <section>
                 <h1>Movie Collection</h1>
